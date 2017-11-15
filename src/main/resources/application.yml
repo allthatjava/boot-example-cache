@@ -1,0 +1,8 @@
+spring:
+  cache:
+    type: simple
+## Following properties are needed if above spring.cache.type is 'redis'.
+#  redis:
+#    host:
+#    port:
+    
