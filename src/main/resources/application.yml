@@ -1,8 +1,10 @@
 spring:
   cache:
     type: simple
-## Following properties are needed if above spring.cache.type is 'redis'.
+    cache-names:        # This 'cache-names' can limit the name spaces for Cache. If this property doesn't exist, it will allow all. If exist, only the listed names will be allowed to cache
+    - post-single
 #  redis:
 #    host:
 #    port:
+## Above two properties(host, port) are needed if ablove spring.cache.type is 'redis'.
     

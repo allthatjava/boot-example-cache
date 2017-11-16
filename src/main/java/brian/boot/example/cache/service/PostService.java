@@ -33,11 +33,16 @@ public class PostService {
 		return dataMap.get(new Integer(id));
 	}
 	
+	// @CachePut if the data exists in cache, it will update it. Otherwise add the data to cache.
+	// Then still execute the method
+//	@CachePut(value="post-single", key = "#post.id", condition="#post.id==1")	// <-- Condition can be added
 	@CachePut(value="post-single", key = "#post.id")
 	public void addPost(Post post) {
 		dataMap.put( new Integer(post.getId()), post);
 	}
 	
+	// @CacheEvict will delete the data from cache
+	// If it is update, instead of Evict, use @CachePut
 	@CacheEvict(value="post-single")
 	public void deletePost(int id)
 	{
@@ -45,5 +50,20 @@ public class PostService {
 		
 		// Only delete it from Cache
 //		dataMap.remove(new Integer(id));
+	}
+	
+
+	
+	/**
+	 * Not registered cache name. This should throw an error
+	 * @param id
+	 * @return
+	 */
+	@Cacheable(value = "post-multiple")
+	public Post getPostToFail(int id) {
+		
+		System.out.println("id:"+id+" is fetched from database");
+		
+		return dataMap.get(new Integer(id));
 	}
 }

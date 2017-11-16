@@ -1,6 +1,10 @@
 package brian.boot.example.cache;
 
+import static org.junit.Assert.fail;
+
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,6 +16,9 @@ import brian.boot.example.cache.service.PostService;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class BootExampleCacheApplicationTests {
+	
+	@Rule
+	public final ExpectedException exception = ExpectedException.none();
 
 	@Autowired
 	private PostService service;
@@ -36,5 +43,11 @@ public class BootExampleCacheApplicationTests {
 		System.out.println("Getting Post #1--- It is evicted before, so it should be fetched from database again");
 		Post p3 = service.getPost(1);
 		System.out.println("Getting Post #1--- Fetched");
+	}
+	
+	@Test
+	public void testCachingToFail() {
+		exception.expect(IllegalArgumentException.class);
+		Post p1 = service.getPostToFail(1);
 	}
 }
