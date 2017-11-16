@@ -1,26 +1,23 @@
 package brian.boot.example.cache.service;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import brian.boot.example.cache.model.Post;
+import brian.boot.example.cache.repository.PostRepository;
 
 @Service
 public class PostService {
 	
-	private Map<Integer, Post> dataMap = new HashMap<>();
+	private final PostRepository repo;
 	
-	public PostService() {
-		dataMap.put(new Integer(1), new Post(1, "No 1 Content"));
-		dataMap.put(new Integer(2), new Post(2, "No 2 Content"));
-		dataMap.put(new Integer(3), new Post(3, "No 3 Content"));
-		dataMap.put(new Integer(4), new Post(4, "No 4 Content"));
-		dataMap.put(new Integer(5), new Post(5, "No 5 Content"));
+	@Autowired
+	public PostService(final PostRepository repo) {
+//		dataMap = new HashMap<>();
+		this.repo = repo;
 	}
 	
 	// If key attribute is omitted, entire parameters becomes a key.
@@ -30,7 +27,7 @@ public class PostService {
 		
 		System.out.println("id:"+id+" is fetched from database");
 		
-		return dataMap.get(new Integer(id));
+		return repo.getPostData(id);
 	}
 	
 	// @CachePut if the data exists in cache, it will update it. Otherwise add the data to cache.
@@ -38,7 +35,7 @@ public class PostService {
 //	@CachePut(value="post-single", key = "#post.id", condition="#post.id==1")	// <-- Condition can be added
 	@CachePut(value="post-single", key = "#post.id")
 	public void addPost(Post post) {
-		dataMap.put( new Integer(post.getId()), post);
+		repo.addPostData( post.getId(), post);
 	}
 	
 	// @CacheEvict will delete the data from cache
@@ -64,6 +61,6 @@ public class PostService {
 		
 		System.out.println("id:"+id+" is fetched from database");
 		
-		return dataMap.get(new Integer(id));
+		return repo.getPostData(id);
 	}
 }
