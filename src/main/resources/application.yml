@@ -7,4 +7,10 @@ spring:
 #    host:
 #    port:
 ## Above two properties(host, port) are needed if ablove spring.cache.type is 'redis'.
-    
+logging:
+  level:
+    org.springframework: INFO
+    brian.boot.example.cache: DEBUG
+  file: logs/spring-boot-logging.log
+  pattern:
+    console: 

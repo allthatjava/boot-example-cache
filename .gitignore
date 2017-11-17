@@ -26,3 +26,6 @@ bin/
 .gradle/
 .project
 .settings/
+build/
+
+.vscode/

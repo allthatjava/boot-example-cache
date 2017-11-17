@@ -10,6 +10,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -17,10 +18,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import brian.boot.example.cache.model.Post;
 import brian.boot.example.cache.repository.PostRepository;
+import lombok.extern.slf4j.Slf4j;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-//@ContextConfiguration( classes = {CacheConfig.class} ) 
+//@ContextConfiguration( classes = {CacheConfig.class} )
+@Slf4j
 public class PostServiceTest {
 	
 	@Rule
@@ -34,21 +37,32 @@ public class PostServiceTest {
 	
 	@Before
 	public void setup(){
+//		MockitoAnnotations.initMocks(service);
+//		MockitoAnnotations.initMocks(repo);
+		MockitoAnnotations.initMocks(this);
 	}
 	
 	@Test
-	public void getPost(){
-		when(repo.getPostData(1)).thenReturn(new Post(1, "No 1 content 111"));
+	public void test_getPost_shouldReturn_cachedData(){
 		
-		Post p1 = service.getPost(1);	// Fetch this from Repo (Mock)
-		Post p2 = service.getPost(1);	// from Cache
-		Post p3 = service.getPost(1);	// from Cache
+		// Given
+		final int TEST_NO = 3;
+		Post p = new Post(TEST_NO, "No 3 content - 333");
+
+		// When
+		when(repo.getPostData(TEST_NO)).thenReturn(p);
 		
-		System.out.println(p1.getContent());
+		// Test
+		Post p1 = service.getPost(TEST_NO);	// Fetch this from Repo (Mock)
+		Post p2 = service.getPost(TEST_NO);	// from Cache
+		Post p3 = service.getPost(TEST_NO);	// from Cache
+		
+		// Assert
+		log.debug("---------"+p1.getContent());
 		assertEquals( p1.getContent(), p2.getContent());
 		assertEquals( p2.getContent(), p3.getContent());
 		
-		verify(repo, times(1)).getPostData(1);
+		verify(repo, times(1)).getPostData(TEST_NO);
 	}
 	
 //	@Test
@@ -74,10 +88,30 @@ public class PostServiceTest {
 //		Post p3 = service.getPost(1);
 //		System.out.println("Getting Post #1--- Fetched");
 //	}
-//	
-//	@Test
-//	public void testCachingToFail() {
-//		exception.expect(IllegalArgumentException.class);
-//		Post p1 = service.getPostToFail(1);
-//	}
+	
+	@Test
+	public void test_addPost_withOnePost_shouldAddedAndCached() {
+		
+		// Given 
+		final int TEST_NO = 1;
+		final Post p1 = new Post(TEST_NO, "No "+TEST_NO+" content - Updated");
+		
+		// When
+		when(repo.getPostData(TEST_NO)).thenReturn(p1);
+		
+		// Test
+		service.addPost(p1);		// Add to database and also add in Cache
+		
+		Post c = service.getPost(TEST_NO);
+		log.debug(TEST_NO+" content:"+c.getContent());
+		
+		// Assert
+		verify(repo, times(1)).addPostData(TEST_NO, p1);		// Must be called
+	}
+	
+	@Test
+	public void test_cachingToFail_throws_IllegalArgumentException() {
+		exception.expect(IllegalArgumentException.class);
+		service.getPostToFail(1);
+	}
 }
