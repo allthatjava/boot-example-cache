@@ -21,8 +21,13 @@ public class PostService {
 		this.repo = repo;
 	}
 	
-	// If key attribute is omitted, entire parameters becomes a key.
-	// So, if same parameters are passed, cached data will be return
+	/** 
+	 * If key attribute is omitted, entire parameters becomes a key.
+	 * So, if same parameters are passed, cached data will be return
+	 * 
+	 * @param id
+	 * @return
+	 */
 	@Cacheable(value = "post-single")
 	public Post getPost(int id) {
 		
@@ -31,25 +36,33 @@ public class PostService {
 		return repo.getPostData(id);
 	}
 	
-	// @CachePut if the data exists in cache, it will update it. Otherwise add the data to cache.
-	// Then still execute the method
-	// @CachePut(value="post-single", key = "#post.id", condition="#post.id==1")	// <-- Condition can be added
-	@CachePut(value="post-single")
+	/**
+	 * The annotation @CachePut if the data exists in cache, it will update it. Otherwise add the data to cache.
+	 * Then still execute the method
+	 * @CachePut(value="post-single", key = "#post.id", condition="#post.id==1")	// <-- Condition can be added
+	 * 
+	 * @param post
+	 */
+	@CachePut(value="post-single", key="#post.id")
 	public void addPost(Post post) {
 		log.debug("id:"+post.getId()+" is added(or updated) to database");
 		
 		repo.addPostData( post.getId(), post);
 	}
 	
-	// @CacheEvict will delete the data from cache
-	// If it is update, instead of Evict, use @CachePut
+	/**
+	 * The Annotation @CacheEvict will delete the data from cache
+	 * If it is update, instead of Evict, use @CachePut
+	 * 
+	 * @param id
+	 */
 	@CacheEvict(value="post-single")
 	public void deletePost(int id)
 	{
 		log.debug("id:"+id+" is evicted");
 		
 		// Only delete it from Cache
-//		dataMap.remove(new Integer(id));
+		repo.removePostData(id);
 	}
 	
 	/**

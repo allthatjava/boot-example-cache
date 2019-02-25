@@ -1,6 +1,7 @@
 package brian.boot.example.cache.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -65,30 +66,6 @@ public class PostServiceTest {
 		verify(repo, times(1)).getPostData(TEST_NO);
 	}
 	
-//	@Test
-//	public void testCaching() {
-//		
-//		service.addPost(new Post(1,"No 1 Content"));
-//		
-//		System.out.println("Getting Post #1---");
-//		service.getPost(1);
-//		System.out.println("Getting Post #1--- Fetched");
-//		
-//		System.out.println("Getting Post #1 again. This should not be fetched from Database");
-//		service.getPost(1);
-//		System.out.println("Getting Post #1--- Fetched");
-//		
-//		// Evicting a data from Cache
-//		System.out.println("Evict Post #1 from Cache---");
-//		service.deletePost(1);
-//		System.out.println("Evict Post #1 from Cache--- Evicted");
-//		
-//		// Getting Post #1 again from the database
-//		System.out.println("Getting Post #1--- It is evicted before, so it should be fetched from database again");
-//		Post p3 = service.getPost(1);
-//		System.out.println("Getting Post #1--- Fetched");
-//	}
-	
 	@Test
 	public void test_addPost_withOnePost_shouldAddedAndCached() {
 		
@@ -107,6 +84,28 @@ public class PostServiceTest {
 		
 		// Assert
 		verify(repo, times(1)).addPostData(TEST_NO, p1);		// Must be called
+	}
+	
+	@Test
+	public void test_deletePost_withPost2_shouldDeleteAndEvict() {
+		// Given 
+		final int TEST_NO = 2;
+		final Post p = new Post(TEST_NO, "NO "+TEST_NO+" contect - Added"); 
+		
+		// When
+		when(repo.getPostData(TEST_NO)).thenReturn(p);
+		
+		// Test
+		Post c = service.getPost(TEST_NO);		// Cache it first (called once)
+		service.deletePost(p.getId());			// then remove it from the Cache
+		
+		service.addPost(p);						// Add it back and cache will be added
+		Post d = service.getPost(TEST_NO);		// This will be pulled from Cache.	
+		
+		// Assert
+		verify(repo, times(1)).removePostData(TEST_NO);		// Must be called
+		verify(repo, times(1)).addPostData(TEST_NO, p);		// Must be called
+		verify(repo, times(1)).getPostData(TEST_NO);		// Must be called only once, not twice
 	}
 	
 	@Test
