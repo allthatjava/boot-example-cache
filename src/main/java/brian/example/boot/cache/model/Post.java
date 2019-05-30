@@ -1,4 +1,4 @@
-package brian.boot.example.cache.model;
+package brian.example.boot.cache.model;
 
 public class Post {
 

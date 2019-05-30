@@ -1,4 +1,4 @@
-package brian.boot.example.cache.service;
+package brian.example.boot.cache.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -17,8 +17,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import brian.boot.example.cache.model.Post;
-import brian.boot.example.cache.repository.PostRepository;
+import brian.example.boot.cache.model.Post;
+import brian.example.boot.cache.repository.PostRepository;
+import brian.example.boot.cache.service.PostService;
 import lombok.extern.slf4j.Slf4j;
 
 @RunWith(SpringRunner.class)

@@ -1,4 +1,4 @@
-package brian.boot.example.cache;
+package brian.example.boot.cache;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

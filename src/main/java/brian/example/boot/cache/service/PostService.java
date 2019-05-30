@@ -1,4 +1,4 @@
-package brian.boot.example.cache.service;
+package brian.example.boot.cache.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -6,8 +6,8 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import brian.boot.example.cache.model.Post;
-import brian.boot.example.cache.repository.PostRepository;
+import brian.example.boot.cache.model.Post;
+import brian.example.boot.cache.repository.PostRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @Service

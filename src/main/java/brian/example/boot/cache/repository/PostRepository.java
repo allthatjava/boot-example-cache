@@ -1,11 +1,11 @@
-package brian.boot.example.cache.repository;
+package brian.example.boot.cache.repository;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
-import brian.boot.example.cache.model.Post;
+import brian.example.boot.cache.model.Post;
 
 @Repository
 public class PostRepository {
