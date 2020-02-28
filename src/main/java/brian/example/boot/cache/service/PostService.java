@@ -32,7 +32,8 @@ public class PostService {
 	public Post getPost(int id) {
 		
 		log.debug("id:"+id+" is fetched from database");
-		
+		System.out.println("id:"+id+" is fetched from database");
+
 		return repo.getPostData(id);
 	}
 	

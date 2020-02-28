@@ -1,16 +1,32 @@
 spring:
+  profiles: default
   cache:
     type: simple
     cache-names:        # This 'cache-names' can limit the name spaces for Cache. If this property doesn't exist, it will allow all. If exist, only the listed names will be allowed to cache
     - post-single
-#  redis:
-#    host:
-#    port:
 ## Above two properties(host, port) are needed if ablove spring.cache.type is 'redis'.
 logging:
   level:
     org.springframework: INFO
-    brian.boot.example.cache: DEBUG
+    brian.example.boot.cache: DEBUG
   file: logs/spring-boot-logging.log
   pattern:
-    console: 
+    console:
+---
+spring:
+  profiles: local-docker
+  cache:
+    type: redis
+    cache-names:
+      - post-single
+  redis:
+    host: 192.168.99.100
+    port: 6379
+---
+# PCF environment
+spring:
+  profiles: development
+  cache:
+    type: redis
+    cache-names:
+      - post-single
